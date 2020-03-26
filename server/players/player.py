@@ -10,12 +10,9 @@ class Player:
         self._card = card
 
     @property
-    def card(self):
-        if not self._card:
-            raise AttributeError("Player card is not set")
-
-        return self._card
+    def name(self) -> str:
+        return self._name
 
     @property
-    def name(self):
-        return self._name
+    def card(self) -> Card:
+        return self._card

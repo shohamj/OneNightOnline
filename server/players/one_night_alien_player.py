@@ -7,12 +7,9 @@ class OneNightAlienPlayer(Player):
         super(OneNightAlienPlayer, self).__init__(name)
         self._index = None
 
-    def set_index(self, index: int):
+    def set_index(self, index: int) -> None:
         self._index = index
 
     @property
-    def index(self):
-        if not self._index:
-            raise AttributeError("Player index is not set")
-
+    def index(self) -> int:
         return self._index

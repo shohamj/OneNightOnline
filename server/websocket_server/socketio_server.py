@@ -29,7 +29,8 @@ async def create_player(sid: str, data: Dict[str, str]):
 @logger
 @json_data
 async def add_room(sid: str, data: Dict[str, str]):
-    rooms_manager.add_room(sid, [])
+    game_room_id = rooms_manager.add_room(sid, [])
+    await sio.emit("room_created", {"room_id": game_room_id}, room_id=sid)
 
 
 @sio.event
