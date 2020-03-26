@@ -23,7 +23,7 @@ class RoomsManager:
 
     def is_player_in_room(self, sid) -> bool:
         player = self.sid_to_player[sid]
-        return any([room.is_member(player) for room in self.rooms])
+        return any([room.is_member(player) for room in self.rooms.values()])
 
     def create_player(self, sid: str, name: str) -> None:
         if sid in self.sid_to_player:

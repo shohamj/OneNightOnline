@@ -12,21 +12,25 @@ sio.attach(app)
 rooms_manager = RoomsManager(sio)
 
 
+def emit_error(error_msg):
+    sio.emit("message", "Welcome to OneNightOnline")
+
+
 @sio.event
-@logger
+@logger(sio)
 async def connect(sid: str, environ):
-    await sio.emit("message", "Welcome to OneNightOnline")
+    await sio.emit("message", "Welcome to OneNightOnline", room=sid)
 
 
 @sio.event
-@logger
+@logger(sio)
 @json_data
 async def create_player(sid: str, data: Dict[str, str]):
     rooms_manager.create_player(sid, data["name"])
 
 
 @sio.event
-@logger
+@logger(sio)
 @json_data
 async def add_room(sid: str, data: Dict[str, str]):
     game_room_id = rooms_manager.add_room(sid, [])
@@ -34,7 +38,7 @@ async def add_room(sid: str, data: Dict[str, str]):
 
 
 @sio.event
-@logger
+@logger(sio)
 @json_data
 async def join_room(sid: str, data: Dict[str, str]):
     room_id = data["room_id"]
@@ -42,7 +46,7 @@ async def join_room(sid: str, data: Dict[str, str]):
 
 
 @sio.event
-@logger
+@logger(sio)
 @json_data
 async def start_game(sid: str, data: Dict[str, str]):
     room_id = data["room_id"]
@@ -50,7 +54,7 @@ async def start_game(sid: str, data: Dict[str, str]):
 
 
 @sio.event
-@logger
+@logger(sio)
 @json_data
 async def answer(sid: str, data: Dict[str, str]):
     question_id = data["question_id"]
@@ -59,7 +63,7 @@ async def answer(sid: str, data: Dict[str, str]):
 
 
 @sio.event
-@logger
+@logger(sio)
 @json_data
 async def set_name(sid: str, data: dict):
     name = data["name"]
