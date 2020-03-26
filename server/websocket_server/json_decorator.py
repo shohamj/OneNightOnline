@@ -3,7 +3,7 @@ from functools import wraps
 from json import JSONDecodeError
 
 
-def json_event(event_handler):
+def json_data(event_handler):
     @wraps(event_handler)
     async def decorated_event_handler(sid, data):
         try:
