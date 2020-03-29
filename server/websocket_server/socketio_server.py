@@ -4,7 +4,7 @@ import socketio
 from aiohttp import web
 
 from server.rooms.rooms_manager import RoomsManager
-from server.websocket_server.decorators import json_data, logger
+from server.websocket_server.decorators import json_data, logger, emit_errors
 
 sio = socketio.AsyncServer(async_mode='aiohttp')
 app = web.Application()
@@ -12,25 +12,23 @@ sio.attach(app)
 rooms_manager = RoomsManager(sio)
 
 
-def emit_error(error_msg):
-    sio.emit("message", "Welcome to OneNightOnline")
-
-
 @sio.event
-@logger(sio)
+@logger
 async def connect(sid: str, environ):
     await sio.emit("message", "Welcome to OneNightOnline", room=sid)
 
 
 @sio.event
-@logger(sio)
+@logger
+@emit_errors(sio)
 @json_data
 async def create_player(sid: str, data: Dict[str, str]):
     rooms_manager.create_player(sid, data["name"])
 
 
 @sio.event
-@logger(sio)
+@logger
+@emit_errors(sio)
 @json_data
 async def add_room(sid: str, data: Dict[str, str]):
     game_room_id = rooms_manager.add_room(sid, [])
@@ -38,7 +36,8 @@ async def add_room(sid: str, data: Dict[str, str]):
 
 
 @sio.event
-@logger(sio)
+@logger
+@emit_errors(sio)
 @json_data
 async def join_room(sid: str, data: Dict[str, str]):
     room_id = data["room_id"]
@@ -46,7 +45,8 @@ async def join_room(sid: str, data: Dict[str, str]):
 
 
 @sio.event
-@logger(sio)
+@logger
+@emit_errors(sio)
 @json_data
 async def start_game(sid: str, data: Dict[str, str]):
     room_id = data["room_id"]
@@ -54,7 +54,8 @@ async def start_game(sid: str, data: Dict[str, str]):
 
 
 @sio.event
-@logger(sio)
+@logger
+@emit_errors(sio)
 @json_data
 async def answer(sid: str, data: Dict[str, str]):
     question_id = data["question_id"]
@@ -63,7 +64,8 @@ async def answer(sid: str, data: Dict[str, str]):
 
 
 @sio.event
-@logger(sio)
+@logger
+@emit_errors(sio)
 @json_data
 async def set_name(sid: str, data: dict):
     name = data["name"]

@@ -1,0 +1,2 @@
+class OneNightException(Exception):
+    pass
