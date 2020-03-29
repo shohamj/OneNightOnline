@@ -16,18 +16,6 @@ handler.setFormatter(formatter)
 one_night_logger.addHandler(handler)
 
 
-def json_data(event_handler):
-    @wraps(event_handler)
-    async def decorated_event_handler(sid, data):
-        try:
-            data_as_json = json.loads(data)
-            await event_handler(sid, data_as_json)
-        except JSONDecodeError as ex:
-            raise OneNightException("Data must be in JSON format") from ex
-
-    return decorated_event_handler
-
-
 def logger(event_handler: Callable):
     @wraps(event_handler)
     async def decorated_event_handler(sid, data):
@@ -37,6 +25,7 @@ def logger(event_handler: Callable):
             await event_handler(sid, data)
         except Exception as ex:
             one_night_logger.error(f"Event '{event_name}' raised '{ex}'")
+            raise
 
     return decorated_event_handler
 
