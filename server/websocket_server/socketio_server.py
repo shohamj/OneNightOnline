@@ -21,7 +21,7 @@ STR_TO_CARD = {
 @sio.event
 @logger
 async def connect(sid: str, environ: Dict[str, str]) -> None:
-    await sio.emit("message", "Welcome to OneNightOnline", room=sid)
+    await sio.emit("message", {"message": "Welcome to OneNightOnline"}, room=sid)
 
 
 @sio.event
