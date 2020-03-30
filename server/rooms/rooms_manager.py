@@ -1,9 +1,9 @@
+from __future__ import annotations
+
 from random import randint
 from typing import List
-from socketio import AsyncServer
 
 from server.actions.scoketio_actions_manager import SocketIOActionManager
-from server.cards.card import Card
 from server.exceptions.one_night_exception import OneNightException
 from server.players.player import Player
 from server.rooms.room import Room
@@ -64,7 +64,6 @@ class RoomsManager:
         room.join(new_player)
         for player in room.players:
             player_sid = self.player_to_sid[player]
-            print(player_sid)
             await self.server.emit("player_joined", {"name": new_player.name}, room=player_sid)
 
     async def exit_room(self, sid, room_id):

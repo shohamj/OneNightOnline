@@ -1,9 +1,8 @@
+from __future__ import annotations
+
 from typing import List
 
-from server.actions.actions_manager import ActionManager
-from server.cards.card import Card
 from server.games.one_night_alien import OneNightAlien
-from server.players.player import Player
 
 
 class Room:

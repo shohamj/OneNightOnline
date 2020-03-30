@@ -1,10 +1,9 @@
-from abc import ABCMeta, abstractmethod
+from __future__ import annotations
 
-import server.games.one_night_game as one_night_game
+from abc import ABCMeta, abstractmethod
 
 
 class Card(metaclass=ABCMeta):
-
     @abstractmethod
-    async def play(self, game: one_night_game.OneNightGame):
+    async def play(self, game: OneNightGame):
         pass

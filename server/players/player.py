@@ -1,4 +1,4 @@
-from server.cards.card import Card
+from __future__ import annotations
 
 
 class Player:

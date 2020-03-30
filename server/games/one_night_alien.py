@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 from typing import List
 
 from server.cards.alien import Alien
-from server.cards.card import Card
 from server.games.one_night_game import OneNightGame
 
 

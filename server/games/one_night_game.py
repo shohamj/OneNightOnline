@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 import random
 from abc import abstractmethod
 from typing import List
 
-from server.actions.actions_manager import ActionManager
 from server.exceptions.one_night_exception import OneNightException
 
 NUM_OF_CENTER_CARDS = 3
@@ -10,7 +11,7 @@ NUM_OF_CENTER_CARDS = 3
 
 class OneNightGame:
 
-    def __init__(self, players, cards, action_manager):
+    def __init__(self, players: List[Player], cards: List[Card], action_manager: ActionManager) -> None:
         if len(players) + NUM_OF_CENTER_CARDS != len(cards):
             raise OneNightException(f"Can't create a game with {len(players)} players and {len(cards)} cards")
         self._players = players
@@ -28,7 +29,7 @@ class OneNightGame:
         return self._action_manager
 
     @property
-    def players(self):
+    def players(self) -> List[Player]:
         return self._players
 
     def hand_out_cards(self):
