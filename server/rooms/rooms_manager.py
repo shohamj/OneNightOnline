@@ -42,7 +42,7 @@ class RoomsManager:
         player = Player(name)
         self._sid_to_player[sid] = player
         self._player_to_sid[player] = sid
-        await self.server.emit("player_created", {"name": name}, room=sid)
+        await self.server.emit("player_created", {"name": player.name, "id": player.id}, room=sid)
 
     async def add_room(self, sid: str, cards: List[Card]) -> None:
         if not self.player_exists(sid):
@@ -68,7 +68,7 @@ class RoomsManager:
         room.join(new_player)
         for player in room.players:
             player_sid = self._player_to_sid[player]
-            await self.server.emit("player_joined", {"name": new_player.name}, room=player_sid)
+            await self.server.emit("player_joined", {"name": new_player.name, "id": new_player.id}, room=player_sid)
 
     async def leave_room(self, sid: str) -> None:
         if not self.player_exists(sid):
@@ -80,7 +80,8 @@ class RoomsManager:
         room.leave(leaving_player)
         for player in room.players:
             player_sid = self._player_to_sid[player]
-            await self.server.emit("player_left", {"name": leaving_player.name}, room=player_sid)
+            await self.server.emit("player_left", {"name": leaving_player.name, "id": leaving_player.id},
+                                   room=player_sid)
 
     async def start_game(self, sid: str) -> None:
         if not self.player_exists(sid):

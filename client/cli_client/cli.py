@@ -41,7 +41,7 @@ def error(data):
 
 @sio.event
 def player_created(data):
-    print_keep_input('Player', data["name"], 'created')
+    print_keep_input("Player", data["name"], "({})".format(data["id"]), "was created")
 
 
 @sio.event
@@ -53,12 +53,12 @@ def room_created(data):
 
 @sio.event
 def player_joined(data):
-    print_keep_input("Player", data["name"], "has joined the room")
+    print_keep_input("Player", data["name"], "({})".format(data["id"]), "has joined the room")
 
 
 @sio.event
 def player_left(data):
-    print_keep_input("Player", data["name"], "has left the room")
+    print_keep_input("Player", data["name"], "({})".format(data["id"]), "has left the room")
 
 
 @sio.event
@@ -90,14 +90,14 @@ def choose_room():
 
 
 def join_room():
-    id = input_with_save("Room ID: ")
-    sio.emit("join_room", {"room_id": id})
+    selected_room_id = input_with_save("Room ID: ")
+    sio.emit("join_room", {"room_id": selected_room_id})
     time.sleep(DELAY)
 
 
 def add_room():
     print("Adding room")
-    sio.emit("add_room", {"cards": ["alien"] * 5})
+    sio.emit("add_room", {"cards": ["alien"] * 4})
     time.sleep(DELAY)
 
 

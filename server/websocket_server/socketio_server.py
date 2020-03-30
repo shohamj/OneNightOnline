@@ -59,10 +59,7 @@ async def join_room(sid: str, data: Dict[str, str]) -> None:
 @logger
 @emit_errors(sio)
 async def exit_room(sid: str, data: Dict[str, str]) -> None:
-    if "room_id" not in data:
-        raise OneNightException("Missing key 'room_id")
-    room_id = data["room_id"]
-    await rooms_manager.leave_room(sid, room_id)
+    await rooms_manager.leave_room(sid)
 
 
 @sio.event
