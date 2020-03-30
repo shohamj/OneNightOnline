@@ -20,13 +20,13 @@ def generate_room_id(length: int = 6) -> str:
 
 
 class RoomsManager:
-    def __init__(self, server: AsyncServer):
+    def __init__(self, server: AsyncServer) -> None:
         self.server = server
         self.rooms = {}
         self.sid_to_player = {}
         self.player_to_sid = {}
 
-    def get_player_room(self, sid):
+    def get_player_room(self, sid: str) -> Room:
         player = self.sid_to_player[sid]
         for room in self.rooms.values():
             if room.is_member(player):
@@ -40,7 +40,7 @@ class RoomsManager:
         self.player_to_sid[player] = sid
         await self.server.emit("player_created", {"name": name}, room=sid)
 
-    async def add_room(self, sid: str, cards: List[Card]):
+    async def add_room(self, sid: str, cards: List[Card]) -> None:
         if sid not in self.sid_to_player:
             raise OneNightException(ERROR_PLAYER_NOT_CREATED_ERROR)
         if self.get_player_room(sid):
@@ -52,7 +52,7 @@ class RoomsManager:
         room.join(player)
         await self.server.emit("room_created", {"room_id": room_id}, room=sid)
 
-    async def join_room(self, sid, room_id) -> None:
+    async def join_room(self, sid: str, room_id: str) -> None:
         if sid not in self.sid_to_player:
             raise OneNightException(ERROR_PLAYER_NOT_CREATED_ERROR)
         if self.get_player_room(sid):
@@ -66,10 +66,10 @@ class RoomsManager:
             player_sid = self.player_to_sid[player]
             await self.server.emit("player_joined", {"name": new_player.name}, room=player_sid)
 
-    async def exit_room(self, sid, room_id):
+    async def exit_room(self, sid: str, room_id: str) -> None:
         pass
 
-    async def start_game(self, sid):
+    async def start_game(self, sid: str) -> None:
         if sid not in self.sid_to_player:
             raise OneNightException(ERROR_PLAYER_NOT_CREATED_ERROR)
         room = self.get_player_room(sid)

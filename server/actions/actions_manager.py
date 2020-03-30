@@ -6,5 +6,5 @@ from typing import List
 
 class ActionManager(metaclass=ABCMeta):
     @abstractmethod
-    def send_message(self, message: str, players: List[Player]):
+    def send_message(self, message: str, players: List[Player]) -> None:
         pass

@@ -21,7 +21,7 @@ class OneNightGame:
 
     @property
     @abstractmethod
-    def cards(self):
+    def cards(self) -> List[Card]:
         return []
 
     @property
@@ -32,7 +32,7 @@ class OneNightGame:
     def players(self) -> List[Player]:
         return self._players
 
-    def hand_out_cards(self):
+    def hand_out_cards(self) -> None:
         random.shuffle(self._cards)
         self._center_cards = self._cards[:NUM_OF_CENTER_CARDS]
         players_cards = self._cards[NUM_OF_CENTER_CARDS:]

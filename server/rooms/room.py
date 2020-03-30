@@ -6,7 +6,7 @@ from server.games.one_night_alien import OneNightAlien
 
 
 class Room:
-    def __init__(self, owner: Player, cards: List[Card]):
+    def __init__(self, owner: Player, cards: List[Card]) -> None:
         self._cards = cards
         self._owner = owner
         self._players = []
@@ -18,7 +18,7 @@ class Room:
     def is_member(self, player: Player) -> bool:
         return player in self._players
 
-    def set_action_manager(self, action_manager: ActionManager):
+    def set_action_manager(self, action_manager: ActionManager) -> None:
         self._action_manager = action_manager
 
     @property
@@ -29,6 +29,6 @@ class Room:
     def players(self) -> List[Player]:
         return self._players
 
-    async def start_game(self):
+    async def start_game(self) -> None:
         game = OneNightAlien(self._players, self._cards, self._action_manager)
         await game.run()
