@@ -15,6 +15,9 @@ class Room:
     def join(self, player: Player) -> None:
         self._players.append(player)
 
+    def leave(self, player: Player) -> None:
+        self._players.remove(player)
+
     def is_member(self, player: Player) -> bool:
         return player in self._players
 

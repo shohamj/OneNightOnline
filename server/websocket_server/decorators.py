@@ -16,11 +16,16 @@ one_night_logger.addHandler(handler)
 
 def logger(event_handler: Callable) -> Callable:
     @wraps(event_handler)
-    async def decorated_event_handler(sid: str, data: Dict[str, str]) -> None:
+    async def decorated_event_handler(*args: any) -> None:
         event_name = event_handler.__name__
+        if len(args) == 2:
+            sid, data = args
+        else:
+            sid = args[0]
+            data = None
         one_night_logger.info(f"Event '{event_name}' was called by the client '{sid}' with the data {data}")
         try:
-            await event_handler(sid, data)
+            await event_handler(*args)
         except Exception as ex:
             one_night_logger.error(f"Event '{event_name}' raised '{ex}'")
             raise

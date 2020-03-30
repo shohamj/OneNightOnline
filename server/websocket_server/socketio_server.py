@@ -26,6 +26,13 @@ async def connect(sid: str, environ: Dict[str, str]) -> None:
 
 @sio.event
 @logger
+async def disconnect(sid: str) -> None:
+    if rooms_manager.player_exists(sid) and rooms_manager.get_player_room(sid):
+        await rooms_manager.leave_room(sid)
+
+
+@sio.event
+@logger
 @emit_errors(sio)
 async def create_player(sid: str, data: Dict[str, str]) -> None:
     await rooms_manager.create_player(sid, data["name"])
@@ -46,6 +53,16 @@ async def join_room(sid: str, data: Dict[str, str]) -> None:
         raise OneNightException("Missing key 'room_id")
     room_id = data["room_id"]
     await rooms_manager.join_room(sid, room_id)
+
+
+@sio.event
+@logger
+@emit_errors(sio)
+async def exit_room(sid: str, data: Dict[str, str]) -> None:
+    if "room_id" not in data:
+        raise OneNightException("Missing key 'room_id")
+    room_id = data["room_id"]
+    await rooms_manager.leave_room(sid, room_id)
 
 
 @sio.event

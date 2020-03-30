@@ -53,7 +53,12 @@ def room_created(data):
 
 @sio.event
 def player_joined(data):
-    print_keep_input("Player", data["name"], "joined the room")
+    print_keep_input("Player", data["name"], "has joined the room")
+
+
+@sio.event
+def player_left(data):
+    print_keep_input("Player", data["name"], "has left the room")
 
 
 @sio.event
