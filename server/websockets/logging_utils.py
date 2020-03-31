@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import wraps
-from typing import Callable, Dict
-
-from server.exceptions.one_night_exception import OneNightException
+from typing import Callable
 
 one_night_logger = logging.getLogger("one_night")
 one_night_logger.setLevel(logging.INFO)
@@ -23,7 +21,7 @@ def logger(event_handler: Callable) -> Callable:
         else:
             sid = args[0]
             data = None
-        one_night_logger.info(f"Event '{event_name}' was called by the client '{sid}' with the data {data}")
+        one_night_logger.info(f"Received event '{event_name}' from the client '{sid}' with the data {data}")
         try:
             await event_handler(*args)
         except Exception as ex:
@@ -33,16 +31,12 @@ def logger(event_handler: Callable) -> Callable:
     return decorated_event_handler
 
 
-def emit_errors(server: AsyncServer) -> Callable:
-    def decorator(event_handler: Callable) -> Callable:
-        @wraps(event_handler)
-        async def decorated_event_handler(sid, data) -> None:
-            try:
-                await event_handler(sid, data)
-            except OneNightException as ex:
-                await server.emit("error", {"message": str(ex)}, room=sid)
-                raise
+def emit_with_logs(original_emit):
+    async def emit(*args, **kwargs):
+        event = args[0]
+        data = args[1]
+        sid = kwargs["room"]
+        one_night_logger.info(f"Emitted event '{event}' to the client '{sid}' with the data {data}")
+        return await original_emit(*args, **kwargs)
 
-        return decorated_event_handler
-
-    return decorator
+    return emit

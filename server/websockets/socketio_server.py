@@ -6,9 +6,11 @@ from aiohttp import web
 from server.cards.alien import Alien
 from server.exceptions.one_night_exception import OneNightException
 from server.rooms.rooms_manager import RoomsManager
-from server.websockets.decorators import logger, emit_errors
+from server.websockets.error_handling_utils import emit_errors
+from server.websockets.logging_utils import logger, emit_with_logs
 
-sio = socketio.AsyncServer(async_mode='aiohttp', logger=True)
+sio = socketio.AsyncServer(async_mode='aiohttp')
+sio.emit = emit_with_logs(sio.emit)
 app = web.Application()
 sio.attach(app)
 rooms_manager = RoomsManager(sio)
