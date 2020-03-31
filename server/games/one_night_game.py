@@ -39,7 +39,12 @@ class OneNightGame:
         for player, card in zip(self._players, players_cards):
             player.set_card(card)
 
+    def vote(self, player: Player, votes: List[Player]) -> None:
+        self._action_manager.vote(player, votes)
+
     async def run(self) -> None:
         self.hand_out_cards()
         for card in self.cards:
             await card.play(self)
+        most_voted = await self._action_manager.get_most_voted(self._players)
+        await self._action_manager.notify_most_voted(most_voted, self._players)

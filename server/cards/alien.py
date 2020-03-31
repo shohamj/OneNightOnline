@@ -6,5 +6,7 @@ class Alien(Card):
     async def play(self, game: OneNightGame) -> None:
         aliens = [player for player in game.players if isinstance(player.card, Alien)]
         await game.action_manager.send_message("Aliens, open your eyes", aliens)
+        await game.action_manager.pause(2)
         await game.action_manager.send_message("Aliens, look at other aliens", aliens)
+        await game.action_manager.pause(2)
         await game.action_manager.send_message("Aliens, close your eyes", aliens)

@@ -97,6 +97,17 @@ class RoomsManager:
         room.set_action_manager(SocketIOActionManager(self.server, self._sid_to_player, self._player_to_sid))
         await room.start_game()
 
+    def vote(self, sid: str, players_ids: List[str]):
+        if not self.player_exists(sid):
+            raise OneNightException(ERROR_PLAYER_NOT_CREATED_ERROR)
+        room = self.get_player_room(sid)
+        if not room:
+            raise OneNightException(ERROR_PLAYER_NOT_IN_ROOM)
+        voted_players = [player for player in room.players if player.id in players_ids]
+        voting_player = self._sid_to_player[sid]
+        room.game.vote(voting_player, voted_players)
+
+
 
 if __name__ == '__main__':
     print(generate_room_id())

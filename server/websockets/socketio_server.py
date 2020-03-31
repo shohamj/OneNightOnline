@@ -6,9 +6,9 @@ from aiohttp import web
 from server.cards.alien import Alien
 from server.exceptions.one_night_exception import OneNightException
 from server.rooms.rooms_manager import RoomsManager
-from server.websocket_server.decorators import logger, emit_errors
+from server.websockets.decorators import logger, emit_errors
 
-sio = socketio.AsyncServer(async_mode='aiohttp')
+sio = socketio.AsyncServer(async_mode='aiohttp', logger=True)
 app = web.Application()
 sio.attach(app)
 rooms_manager = RoomsManager(sio)
@@ -80,6 +80,17 @@ async def answer(sid: str, data: Dict[str, str]) -> None:
     question_id = data["question_id"]
     user_answer = data["user_answer"]
     print(f"Answer '{user_answer}' for question ID'{question_id}'")
+
+
+@sio.event
+@logger
+@emit_errors(sio)
+async def vote(sid: str, data: Dict[str, str]) -> None:
+    if "players_ids" not in data:
+        raise OneNightException("Missing key 'players_ids")
+    if not isinstance(data["players_ids"], list):
+        raise OneNightException("Expecting a list of players IDs")
+    rooms_manager.vote(sid, data["players_ids"])
 
 
 def main():

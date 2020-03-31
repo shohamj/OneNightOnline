@@ -8,6 +8,7 @@ sio = socketio.Client()
 room_id = None
 last_input = ""
 should_reprint = False
+room_players = {}
 
 
 def input_with_save(input_message):
@@ -53,17 +54,24 @@ def room_created(data):
 
 @sio.event
 def player_joined(data):
+    room_players[data["id"]] = data["name"]
     print_keep_input("Player", data["name"], "({})".format(data["id"]), "has joined the room")
 
 
 @sio.event
 def player_left(data):
+    room_players.pop(data["id"])
     print_keep_input("Player", data["name"], "({})".format(data["id"]), "has left the room")
 
 
 @sio.event
 def game_started(data):
     print_keep_input("The game has started!")
+
+
+@sio.event
+def most_voted(data):
+    print_keep_input("Dead players:", data["players"])
 
 
 def connect():
@@ -97,7 +105,7 @@ def join_room():
 
 def add_room():
     print("Adding room")
-    sio.emit("add_room", {"cards": ["alien"] * 4})
+    sio.emit("add_room", {"cards": ["alien"] * 5})
     time.sleep(DELAY)
 
 
@@ -106,7 +114,17 @@ def start_game():
     sio.emit("start_game", {})
 
 
+def vote():
+    print("Choose a player to kill:")
+    for index, (player_id, player_name) in enumerate(room_players.items()):
+        print(f"{index + 1}) {player_name} ({player_id})")
+    player_vote = int(input_with_save("Your vote: "))
+    voted_player_id, voted_player_name = list(room_players.items())[player_vote - 1]
+    sio.emit("vote", {"players_ids": [voted_player_id]})
+
+
 def main():
     connect()
     create_player()
     choose_room()
+    vote()

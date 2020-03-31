@@ -11,6 +11,7 @@ class Room:
         self._owner = owner
         self._players = []
         self._action_manager = None
+        self._game = None
 
     def join(self, player: Player) -> None:
         self._players.append(player)
@@ -32,6 +33,10 @@ class Room:
     def players(self) -> List[Player]:
         return self._players
 
+    @property
+    def game(self) -> OneNightGame:
+        return self._game
+
     async def start_game(self) -> None:
-        game = OneNightAlien(self._players, self._cards, self._action_manager)
-        await game.run()
+        self._game = OneNightAlien(self._players, self._cards, self._action_manager)
+        await self._game.run()
