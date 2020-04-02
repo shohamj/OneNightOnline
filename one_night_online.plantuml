@@ -1,0 +1,88 @@
+@startuml name
+skinparam linetype ortho
+!includeurl https://raw.githubusercontent.com/matthewjosephtaylor/plantuml-style/master/style.pu
+
+set namespaceSeparator none
+
+package Frontend {
+        class Client
+        class "Socket.IO Client" as SocketIOClient
+
+        SocketIOClient <..> Client
+}
+
+package Backend {
+        class RoomsManager {
+            rooms: list[Room]
+            players: list[Player]
+            start_game()
+            add_room(): room_id
+            join_room(room_id: string)
+            exit_room()
+        }
+        class Room {
+            players: list[Player]
+            add_player(player: Player)
+            start_game(cards: Card)
+        }
+        class Player {
+            id: string
+            name: string
+            card: Card
+        }
+        interface Game {
+            state: State
+            start()
+        }
+        interface Card {
+            num_of_votes: int
+            on_start(io: GameIO, state: State)
+            on_night(io: GameIO, state: State)
+            on_death(io: GameIO, state: State)
+            on_win(io: GameIO, state: State)
+        }
+        class SocketGameIO
+        class State {
+            players: list[Player]
+            cards: list[Card]
+            center_cards: list[Card]
+            declared_cards: dict[Player, Card]
+        }
+        class Actions {
+            send_message(io: GameIO, state: State, message: string, players: list[Player])
+            ask_question(io: GameIO, state: State, question: string, answers: list[string], players: list[Player])
+            ask_card_swap(io: GameIO, state: State, players: list[Player])
+            ask_reveal_card(io: GameIO, state: State, players: list[Player])
+            ask_vote(io: GameIO, state: State,players: list[Player])
+        }
+        class GameIO {
+            send_message(message: string, players: list[Player])
+            ask_question(question: string, answers: list[string], players: list[Player])
+            ask_card_swap(players: list[Player])
+            ask_reveal_card(players: list[Player])
+            ask_vote(players: list[Player])
+        }
+        class SocketIOServer
+
+        Room --> Game
+        Room --> Player
+        Game --> GameIO
+        Game --> State
+        Game --> Card
+        Card ..> State
+        Card ..> Actions
+        Actions ..> State
+        Actions ..> GameIO
+        State --> Player
+        State --> Card
+        RoomsManager <..> SocketIOServer
+        RoomsManager --> Room
+        RoomsManager --> Player
+        SocketGameIO --|> GameIO
+        SocketGameIO <..> SocketIOServer
+}
+
+SocketIOClient <..> SocketIOServer
+
+
+@enduml
