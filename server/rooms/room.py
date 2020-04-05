@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List
 
-from server.games.one_night_alien import OneNightAlien
+from server.game.one_night_alien import OneNightAlien
 
 
 class Room:
@@ -10,7 +10,7 @@ class Room:
         self._cards = cards
         self._owner = owner
         self._players = []
-        self._action_manager = None
+        self._game_io = None
         self._game = None
 
     def join(self, player: Player) -> None:
@@ -22,8 +22,8 @@ class Room:
     def is_member(self, player: Player) -> bool:
         return player in self._players
 
-    def set_action_manager(self, action_manager: ActionManager) -> None:
-        self._action_manager = action_manager
+    def set_game_io(self, action_manager: ActionManager) -> None:
+        self._game_io = action_manager
 
     @property
     def owner(self) -> Player:
@@ -38,5 +38,5 @@ class Room:
         return self._game
 
     async def start_game(self) -> None:
-        self._game = OneNightAlien(self._players, self._cards, self._action_manager)
+        self._game = OneNightAlien(self._players, self._cards, self._game_io)
         await self._game.run()

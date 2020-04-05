@@ -105,7 +105,7 @@ def join_room():
 
 def add_room():
     print("Adding room")
-    sio.emit("add_room", {"cards": ["alien"] * 5})
+    sio.emit("add_room", {"cards": ["alien"] * 4})
     time.sleep(DELAY)
 
 

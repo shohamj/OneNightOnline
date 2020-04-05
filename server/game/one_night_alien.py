@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import List
 
 from server.cards.alien import Alien
-from server.games.one_night_game import OneNightGame
+from server.game.one_night_game import OneNightGame
 
 
 class OneNightAlien(OneNightGame):
     @property
-    def cards(self) -> List[Card]:
-        return [Alien()]
+    def night_order(self) -> List[Card]:
+        return [Alien]
