@@ -70,8 +70,8 @@ def game_started(data):
 
 
 @sio.event
-def most_voted(data):
-    print_keep_input("Dead players:", data["players"])
+def game_over(data):
+    print_keep_input("Game over!", "Winning cards:", data["winning_cards"], "Winners are:", data["winners"])
 
 
 def connect():
@@ -105,7 +105,7 @@ def join_room():
 
 def add_room():
     print("Adding room")
-    sio.emit("add_room", {"cards": ["alien"] * 4})
+    sio.emit("add_room", {"cards": ["alien"] * 5})
     time.sleep(DELAY)
 
 

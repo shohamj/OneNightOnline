@@ -4,6 +4,6 @@ class State:
         self.cards = cards
         self.center_cards = []
         self.declared_cards = []
-        self.winners = []
+        self.winning_cards = []
         self.dead = []
         self.votes = {}

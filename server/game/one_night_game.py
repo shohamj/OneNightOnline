@@ -47,9 +47,10 @@ class OneNightGame:
     async def winning_phase(self) -> None:
         for card in self.win_order:
             if await card.is_winner(self._io, self._state):
-                self._state.winners.append(card)
+                self._state.winning_cards.append(card)
                 await card.on_win(self._io, self._state)
-        await self._io.notify_winners(self._state.winners, [])
+        winners = [player for player in self._state.players if player.card in self._state.winning_cards]
+        await self._io.notify_winners(self._state.winning_cards, winners, self._state.players)
 
     async def hand_out_cards(self) -> None:
         random.shuffle(self._state.cards)
@@ -69,9 +70,8 @@ class OneNightGame:
         # Return all the players with the highest number of votes
         return [player for player, total_votes in ordered_counted_votes if total_votes == highest_votes]
 
-    async def vote(self, player: Player, votes: List[Player]) -> None:
-        # self._action_manager.vote(player, votes)
-        pass
+    def vote(self, player: Player, votes: List[Player]) -> None:
+        self._io.set_vote(player, votes)
 
     async def run(self) -> None:
         await self.hand_out_cards()

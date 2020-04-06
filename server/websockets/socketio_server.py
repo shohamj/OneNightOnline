@@ -44,7 +44,7 @@ async def create_player(sid: str, data: Dict[str, str]) -> None:
 @logger
 @emit_errors(sio)
 async def add_room(sid: str, data: Dict[str, str]) -> None:
-    await rooms_manager.add_room(sid, [STR_TO_CARD[card]() for card in data["cards"]])
+    await rooms_manager.add_room(sid, [STR_TO_CARD[card] for card in data["cards"]])
 
 
 @sio.event

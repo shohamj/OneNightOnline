@@ -14,7 +14,7 @@ class GameIO(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    async def set_vote(self, player: Player, votes: List[Player]) -> None:
+    def set_vote(self, player: Player, votes: List[Player]) -> None:
         pass
 
     @abstractmethod
@@ -22,5 +22,6 @@ class GameIO(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    async def notify_winners(self, winners: List[Player], players_to_notify: List[Player]) -> None:
+    async def notify_winners(self, winning_cards: List[Card], winners: List[Player],
+                             players_to_notify: List[Player]) -> None:
         pass
