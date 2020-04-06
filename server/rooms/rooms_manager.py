@@ -5,7 +5,7 @@ from typing import List
 
 from server.actions.scoketio_actions_manager import SocketIOActionManager
 from server.exceptions.one_night_exception import OneNightException
-from server.communication.socket_game_io import SocketGameIO
+from server.communication.socket_io_communicator import SocketIOCommunicator
 from server.players.player import Player
 from server.rooms.room import Room
 
@@ -95,7 +95,7 @@ class RoomsManager:
         for player in room.players:
             player_sid = self._player_to_sid[player]
             await self.server.emit("game_started", {}, room=player_sid)
-        room.set_game_io(SocketGameIO(self.server, self._sid_to_player, self._player_to_sid))
+        room.set_game_io(SocketIOCommunicator(self.server, self._sid_to_player, self._player_to_sid))
         await room.start_game()
 
     def vote(self, sid: str, players_ids: List[str]):

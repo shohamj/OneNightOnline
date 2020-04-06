@@ -3,11 +3,11 @@ from __future__ import annotations
 import asyncio
 from typing import List, Dict
 
-from server.communication.game_io import GameIO
+from server.communication.communicator import Communicator
 from server.exceptions.one_night_exception import OneNightException
 
 
-class SocketGameIO(GameIO):
+class SocketIOCommunicator(Communicator):
     def __init__(self, server: AsyncServer, socket_to_player: Dict[str, Player],
                  player_to_socket: Dict[Player, str]) -> None:
         self._server = server

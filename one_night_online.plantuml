@@ -36,12 +36,12 @@ package Backend {
         }
         interface Card {
             num_of_votes: int
-            on_start(io: GameIO, state: State)
-            on_night(io: GameIO, state: State)
-            on_death(io: GameIO, state: State)
-            on_win(io: GameIO, state: State)
+            on_start(communicator: Communicator, state: State)
+            on_night(communicator: Communicator, state: State)
+            on_death(communicator: Communicator, state: State)
+            on_win(communicator: Communicator, state: State)
         }
-        class SocketGameIO
+        class SocketIOCommunicator
         class State {
             players: list[Player]
             cards: list[Card]
@@ -49,13 +49,13 @@ package Backend {
             declared_cards: dict[Player, Card]
         }
         class Actions {
-            send_message(io: GameIO, state: State, message: string, players: list[Player])
-            ask_question(io: GameIO, state: State, question: string, answers: list[string], players: list[Player])
-            ask_card_swap(io: GameIO, state: State, players: list[Player])
-            ask_reveal_card(io: GameIO, state: State, players: list[Player])
-            ask_vote(io: GameIO, state: State,players: list[Player])
+            send_message(communicator: Communicator, state: State, message: string, players: list[Player])
+            ask_question(communicator: Communicator, state: State, question: string, answers: list[string], players: list[Player])
+            ask_card_swap(communicator: Communicator, state: State, players: list[Player])
+            ask_reveal_card(communicator: Communicator, state: State, players: list[Player])
+            ask_vote(communicator: Communicator, state: State,players: list[Player])
         }
-        class GameIO {
+        class Communicator {
             send_message(message: string, players: list[Player])
             ask_question(question: string, answers: list[string], players: list[Player])
             ask_card_swap(players: list[Player])
@@ -66,20 +66,20 @@ package Backend {
 
         Room --> Game
         Room --> Player
-        Game --> GameIO
+        Game --> Communicator
         Game --> State
         Game --> Card
         Card ..> State
         Card ..> Actions
         Actions ..> State
-        Actions ..> GameIO
+        Actions ..> Communicator
         State --> Player
         State --> Card
         RoomsManager <..> SocketIOServer
         RoomsManager --> Room
         RoomsManager --> Player
-        SocketGameIO --|> GameIO
-        SocketGameIO <..> SocketIOServer
+        SocketIOCommunicator --|> Communicator
+        SocketIOCommunicator <..> SocketIOServer
 }
 
 SocketIOClient <..> SocketIOServer

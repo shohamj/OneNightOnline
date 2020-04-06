@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from typing import List
 
 
-class GameIO(metaclass=ABCMeta):
+class Communicator(metaclass=ABCMeta):
     @abstractmethod
     async def send_message(self, message: str, players: List[Player]) -> None:
         pass

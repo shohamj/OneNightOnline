@@ -12,11 +12,11 @@ NUM_OF_CENTER_CARDS = 3
 
 
 class OneNightGame:
-    def __init__(self, players: List[Player], cards: List[Card], io: GameIO) -> None:
+    def __init__(self, players: List[Player], cards: List[Card], communicator: Communicator) -> None:
         if len(players) + NUM_OF_CENTER_CARDS != len(cards):
             raise OneNightException(f"Can't create a game with {len(players)} players and {len(cards)} cards")
         self._state = State(players, cards)
-        self._io = io
+        self._communicator = communicator
 
     @property
     @abstractmethod
@@ -33,24 +33,24 @@ class OneNightGame:
 
     async def night_phase(self) -> None:
         for card in self.night_order:
-            if card.should_wake_up(self._io, self._state):
-                await card.on_night(self._io, self._state)
+            if card.should_wake_up(self._communicator, self._state):
+                await card.on_night(self._communicator, self._state)
 
     async def voting_phase(self) -> None:
-        self._state.votes = await self._io.get_votes(self._state.players)
+        self._state.votes = await self._communicator.get_votes(self._state.players)
         self._state.dead = self.get_most_voted_players(self._state.votes)
 
     async def death_phase(self) -> None:
         for dead_player in sorted(self._state.dead, key=lambda player: self.death_order.index(player.card)):
-            dead_player.card.on_death(self._io, self._state)
+            dead_player.card.on_death(self._communicator, self._state)
 
     async def winning_phase(self) -> None:
         for card in self.win_order:
-            if await card.is_winner(self._io, self._state):
+            if await card.is_winner(self._communicator, self._state):
                 self._state.winning_cards.append(card)
-                await card.on_win(self._io, self._state)
+                await card.on_win(self._communicator, self._state)
         winners = [player for player in self._state.players if player.card in self._state.winning_cards]
-        await self._io.notify_winners(self._state.winning_cards, winners, self._state.players)
+        await self._communicator.notify_winners(self._state.winning_cards, winners, self._state.players)
 
     async def hand_out_cards(self) -> None:
         random.shuffle(self._state.cards)
@@ -71,7 +71,7 @@ class OneNightGame:
         return [player for player, total_votes in ordered_counted_votes if total_votes == highest_votes]
 
     def vote(self, player: Player, votes: List[Player]) -> None:
-        self._io.set_vote(player, votes)
+        self._communicator.set_vote(player, votes)
 
     async def run(self) -> None:
         await self.hand_out_cards()
