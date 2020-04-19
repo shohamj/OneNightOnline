@@ -10,7 +10,11 @@ class Communicator(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    async def ask_question(self, question: str, possible_answers: List[str], players: List[Player]) -> str:
+    async def ask_question(self, question: str, possible_answers: List[str], player: Player) -> str:
+        pass
+
+    @abstractmethod
+    async def answer_question(self, question_id: str, answers_index: int) -> None:
         pass
 
     @abstractmethod

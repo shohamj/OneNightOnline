@@ -70,6 +70,9 @@ class OneNightGame:
         # Return all the players with the highest number of votes
         return [player for player, total_votes in ordered_counted_votes if total_votes == highest_votes]
 
+    def answer(self, question_id: str, answer_index: int) -> None:
+        self._communicator.answer_question(question_id, answer_index)
+
     def vote(self, player: Player, votes: List[Player]) -> None:
         self._communicator.set_vote(player, votes)
 

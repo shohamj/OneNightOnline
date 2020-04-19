@@ -70,6 +70,15 @@ def game_started(data):
 
 
 @sio.event
+def question(data):
+    print_keep_input(data["question"])
+    for index, answer in enumerate(data["answers"]):
+        print_keep_input(f"{index})", answer)
+    answer_index = input_with_save("Enter your answer index:")
+    sio.emit("answer", {"question_id": data["question_id"], "answer": answer_index})
+
+
+@sio.event
 def game_over(data):
     print_keep_input("Game over!", "Winning cards:", data["winning_cards"], "Winners are:", data["winners"])
 
@@ -127,4 +136,4 @@ def main():
     connect()
     create_player()
     choose_room()
-    vote()
+    # vote()

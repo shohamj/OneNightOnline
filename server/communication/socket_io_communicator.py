@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import uuid
 from typing import List, Dict
 
 from server.communication.communicator import Communicator
@@ -13,6 +14,8 @@ class SocketIOCommunicator(Communicator):
         self._server = server
         self._socket_to_player = socket_to_player
         self._player_to_socket = player_to_socket
+        self._questions_events = {}
+        self._answered_questions = {}
         self._votes_events = {}
         self._votes = {}
 
@@ -23,8 +26,20 @@ class SocketIOCommunicator(Communicator):
                               for player in players]
         await asyncio.wait(emit_message_tasks)
 
-    async def ask_question(self, question: str, possible_answers: List[str], players: List[Player]) -> str:
-        return ""
+    async def ask_question(self, question: str, possible_answers: List[str], player: Player) -> str:
+        question_id = uuid.uuid4().hex
+        self._questions_events[question_id] = asyncio.Event()
+        await self._server.emit("question",
+                                {"question_id": question_id,
+                                 "question": question,
+                                 "answers": possible_answers},
+                                room=self._player_to_socket[player])
+        await self._questions_events[question_id].wait()
+        return self._answered_questions[question_id]
+
+    def answer_question(self, question_id: str, answer_index: int):
+        self._answered_questions[question_id] = answer_index
+        self._questions_events[question_id].set()
 
     def set_vote(self, player: Player, votes: List[Player]) -> None:
         if player in self._votes:

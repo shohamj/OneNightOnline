@@ -3,7 +3,6 @@ from __future__ import annotations
 from random import randint
 from typing import List
 
-from server.actions.scoketio_actions_manager import SocketIOActionManager
 from server.exceptions.one_night_exception import OneNightException
 from server.communication.socket_io_communicator import SocketIOCommunicator
 from server.players.player import Player
@@ -97,6 +96,14 @@ class RoomsManager:
             await self.server.emit("game_started", {}, room=player_sid)
         room.set_game_io(SocketIOCommunicator(self.server, self._sid_to_player, self._player_to_sid))
         await room.start_game()
+
+    def answer(self, sid: str, question_id: str, answer_index: int):
+        if not self.player_exists(sid):
+            raise OneNightException(ERROR_PLAYER_NOT_CREATED_ERROR)
+        room = self.get_player_room(sid)
+        if not room:
+            raise OneNightException(ERROR_PLAYER_NOT_IN_ROOM)
+        room.game.answer(question_id, answer_index)
 
     def vote(self, sid: str, players_ids: List[str]):
         if not self.player_exists(sid):

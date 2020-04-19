@@ -12,3 +12,5 @@ class Alien(Card):
     async def on_night(cls, communicator: Communicator, state: State) -> None:
         alien_players = [player for player in state.players if cls.main_type() in player.card.get_types()]
         await communicator.send_message("Aliens wake up", alien_players)
+        answer = await communicator.ask_question("Do you wish to die?", ["Yes", "No", "Maybe"], alien_players[0])
+        print("Alien answer:", answer)

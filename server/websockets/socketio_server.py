@@ -77,11 +77,11 @@ async def start_game(sid: str, data: Dict[str, str]) -> None:
 async def answer(sid: str, data: Dict[str, str]) -> None:
     if "question_id" not in data:
         raise OneNightException("Missing key 'question_id")
-    if "user_answer" not in data:
-        raise OneNightException("Missing key 'user_answer")
+    if "answer" not in data:
+        raise OneNightException("Missing key 'answer")
     question_id = data["question_id"]
-    user_answer = data["user_answer"]
-    print(f"Answer '{user_answer}' for question ID'{question_id}'")
+    user_answer = data["answer"]
+    rooms_manager.answer(sid, question_id, user_answer)
 
 
 @sio.event
